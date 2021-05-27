@@ -1,34 +1,56 @@
 <template>
   <div class="container">
     <div>
-      <Logo />
       <h1 class="title">
-        nebula
+        Nebula
       </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+      <div class="p-6 mt-5 max-w-sm mx-auto flex items-center space-x-4">
+        <template v-if="showLogin">
+          <Login @toggle-login="toggleLogin"/>
+        </template>
+        <template v-else>
+          <SignUp @toggle-login="toggleLogin"/>
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      showLogin: true,
+      userData: null,
+    }
+  },
+
+  mounted() {
+    // this.getAccount()
+  },
+
+  methods: {
+    toggleLogin(login) {
+      if (login) {
+        this.showLogin = true
+      } else {
+        this.showLogin = false
+      }
+    },
+    getAccount() {
+      // TODO: check store for existing token
+      this.$axios.get('https://api.spacetraders.io/my/account', {
+        headers: {
+          Authorization: 'Bearer ' + this.token
+        }
+      }).then(response => {
+        this.user = response.data.user
+      }).catch(error => {
+        console.error(error)
+      })
+    }
+  }
+}
 </script>
 
 <style>
@@ -47,32 +69,11 @@ export default {}
 }
 
 .title {
-  font-family:
-    'Quicksand',
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
+  font-family: 'Zen Dots', cursive;
   display: block;
   font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
+  font-size: 50px;
+  color: #00b6ca;
   letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
 }
 </style>
